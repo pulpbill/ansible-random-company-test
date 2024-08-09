@@ -1,0 +1,69 @@
+---
+# Start php-fpm and enabling it at startup
+- name: start php-fpm
+  service: 
+    name: php7-fpm
+    state: restarted
+    enabled: true
+
+# Setting the php.ini
+- name: set php ini
+  become: true
+  copy:
+    src: ~/ansible-examples/roles/php/templates/php.ini.ubuntu.j2
+    dest: /etc/php/7.4/fpm/php.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: start php-fpm
+
+# Creating www.conf file with 0644 permissions
+- name: create www.conf
+  file:
+    become: true
+    path: /etc/php/7.4/fpm/conf.d/www.conf
+    state: touch
+    mode: u=rw,g=r,o=r
+
+# Setting the www.conf permissions
+- name: set socket owner
+  become: true
+  lineinfile:
+    dest: "/etc/php/7.4/fpm/conf.d/www.conf"
+    line: "listen.owner = nginx"
+  notify: start php-fpm
+
+- name: set socket group
+  become: true
+  lineinfile:
+    dest: "/etc/php/7.4/fpm/conf.d/www.conf"
+    line: 'listen.group = nginx'
+  notify: start php-fpm
+
+- name: Set socket mode
+  become: true
+  lineinfile:
+    dest: "/etc/php/7.4/fpm/conf.d/www.conf"
+    line: 'listen.mode = 0660'
+  notify: start php-fpm
+
+# Copy basic php info landing page "index.php" from this folder
+- name: copying info.php
+  copy:
+    src: ~/ansible-examples/roles/php/templates/index.php
+    dest: /var/www/html/index.php
+
+# Delete info.php since it carries sensitive info
+- name: delete info.php # Notice that this handler's not being called for the purpose of this test
+  file:
+    path: /var/www/html/index.php
+    state: absent
+
+# Use if you need to change the user
+- name: Nginx html folder permissions 
+  file:
+    path: '/var/www/html/'
+    state: directory
+    recurse: yes
+    user: <your-username> # set your username
+    group: <your-username> #set your groupname

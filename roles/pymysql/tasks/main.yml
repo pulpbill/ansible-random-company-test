@@ -1,0 +1,8 @@
+---
+# update_cache and install python mysql - It may vary depending on py version
+- name: Install PyMySQL
+  apt:
+    name: python3-mysqldb
+    state: present
+    update_cache: true
+    

@@ -1,0 +1,25 @@
+---
+# Copy default.conf vhost from this folder
+- name: copying default.conf
+  copy:
+    src: ~/ansible-examples/roles/webserver/templates/default.conf
+    dest: /etc/nginx/conf.d/default.conf
+
+# Start Nginx and enabling it at startup
+- name: start nginx
+  service: 
+    name: nginx
+    state: restarted
+    enabled: true
+
+# Get HTTP content
+- name: get request
+  uri:
+    url: "http://localhost/info.php" # Change IP/FQDN if necessary
+    method: GET
+  register: http-result  
+
+# Show HTTP response on stdout
+- name: http result
+  debug:
+    var: http-result.stdout

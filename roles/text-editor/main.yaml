@@ -1,0 +1,8 @@
+---
+# Update cache and install nano text editor
+- name: Install Nano
+  apt:
+    name: nano
+    state: present
+    update_cache: true 
+    

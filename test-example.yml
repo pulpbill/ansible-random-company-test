@@ -1,0 +1,10 @@
+- name: Provision LEMP and related tools
+  hosts: hosts
+  become: true
+
+  roles:
+    - pymysql
+    - db
+    - php
+    - webserver
+    - text-editor

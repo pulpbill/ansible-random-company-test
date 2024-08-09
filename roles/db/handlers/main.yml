@@ -1,0 +1,23 @@
+---
+# Start mysql and enabling it at startup
+- name: start mysql 
+  service: 
+    name: mysql 
+    enabled: true 
+    state: started
+
+- name: secure mysql
+  become: true
+  expect:
+    command: mysql_secure_installation
+    responses:
+      'Enter current password for root': ''
+      'Set root password': 'y'
+      'New password': 'admin' # replace for secure password using variables/vault
+      'Re-enter new password': 'admin'
+      'Disallow root login remotely': 'y'
+      'Remove test database': 'y'
+      'Reload privilege tables now': 'y'
+  #   timeout: 1
+  # register: secure_mariadb
+  # failed_when: "'... Failed!' in secure_mariadb.stdout_lines"

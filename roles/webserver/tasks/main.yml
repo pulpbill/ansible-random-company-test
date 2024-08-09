@@ -1,0 +1,12 @@
+---
+# Update cache, install Nginx and call "Start Nginx" handler
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: true
+  notify:
+    - start nginx
+    - copying default.conf
+    - get request
+    - http result

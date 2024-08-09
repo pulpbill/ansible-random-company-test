@@ -1,0 +1,23 @@
+---
+# Add php repo
+- name: Add PHP 7 PPA repository
+  apt_repository:
+    repo: 'ppa:ondrej/php'
+
+# Update cache, Install php necessary pkgs and notify handlers
+- name: Install PHP related packages
+  apt:
+    state: present
+    update_cache: true
+    name: 
+      - php7.4
+      - php7.4-fpm
+      - php7.4-mysql
+  notify:
+    - start php-fpm
+    - copying info.php
+    - set php ini
+    - create www.conf
+    - set socket owner
+    - set socket group
+    - set socket mode
